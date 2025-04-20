@@ -1,5 +1,4 @@
 from pygame import *
-from random import choice, randint
 
 window = display.set_mode((700,500))
 display.set_caption('Snake')
@@ -19,7 +18,7 @@ class Snake(Game_sprite):
         super().__init__( img, x,y, w,h)
         # 0-голова 1 - тело 2-попа 
         self.type = t
-        self.speed = 25
+        self.speed = 1
         self.direction = "0"
         self.cur_image = self.image 
     def update(self):
@@ -47,55 +46,14 @@ class Snake(Game_sprite):
         elif keys[K_RIGHT] and self.direction != 'l':
             self.direction = 'r'
             self.image = transform.rotate(self.cur_image, -90)
-    def set_direct(self):
-        if self.direction == 'd':
-            self.image = transform.rotate(self.cur_image,180)
-        elif self.direction == 'u':
-            self.image = transform.rotate(self.cur_image, 0)
-        elif self.direction == 'r':
-            self.image = transform.rotate(self.cur_image, -90)
-        elif self.direction == 'l':
-            self.image = transform.rotate(self.cur_image, 90)
-
-
-    def eat(self,food):
-        global speed
-        speed+=1
-        food.position()
-
-class Food(Game_sprite):
-    def __init__(self,imgs,x,y,w,h):
-        super().__init__(imgs[0],x,y,w,h)
-        self.costumes = []
-        self.costumes.append(self.image)
-        for i in range(len(imgs)-1):
-            self.image=transform.scale(image.load(imgs[i+1]),(w,h))
-            self.costumes.append(self.image)
-    def set_costume(self,n):
-        self.image = self.costumes[n]
-    def rand_costume(self):
-        self.image =  choice(self.costumes)
-    def position(self):
-        self.rect.x = randint(0,700-self.rect.width)
-        self.rect.y = randint(0,500-self.rect.height)
-        self.rand_costume()
-
 
 
 head = Snake('snake.png',350,250,25,25,0)
-hvost = Snake('popa.png',350,275,25,25,0)
-snake = [head,hvost]
-food = Food(['apple.png','vishna.png','ogurchik.png'],-100,-100,25,25)
-food.position()
-
-
-speed = 1
-
 
 
 clock = time.Clock()
 
-fps = 5
+fps = 60
 
 game = True
 while game:
@@ -106,15 +64,7 @@ while game:
     window.fill((0,250,90))
     head.update()
     head.reset()
-    food.reset()
-    if head.rect.colliderect(food):
-        head.eat(food)
-    for e in range(1,len(snake)):
-        snake[e].reset()
-        snake[e].direction = snake[e-1].direction
-        snake[e].rect.x = snake[e-1].rect.x
-        snake[e].rect.y = snake[e-1].rect.y
-        snake[e].set_direct()
+
 
 
 
